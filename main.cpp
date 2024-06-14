@@ -1,29 +1,28 @@
 #include "movie_database.h"
 
 int main() {
-    User user1 = User("user1", "password");
-    user1.getInfo();
+    Database db;
+    Movie movie1("Inception", 2010, "Christopher Nolan");
+    Movie movie2("The Matrix", 1999, "The Wachowskis");
+    Movie movie3("Interstellar", 8.6, 2014, "Christopher Nolan");
 
-    Movie movie1 = Movie("Titanic", 1997, "James Cameron");
+    db.addMovie(movie1);
+    db.addMovie(movie2);
+    db.addMovie(movie3);
+
+    cout << "Movies in database: " << db.countMovies() << endl;
     movie1.getInfo();
-    movie1.updateRating(7.9);
-    movie1.getInfo();
+    movie2.getInfo();
+    movie3.getInfo();
 
-    cout << "Current generalId: " << Movie::getCurrentGeneralId() << endl;
+    Critic critic1("john_doe", "password123", "John Doe");
+    critic1.addReview(movie1.getId(), "Amazing movie!");
+    critic1.addReview(movie2.getId(), "A revolutionary film!");
 
-    Movie movie2 = Movie("Kill Bill: Vol. 1", 8.2, 2003, "Quentin Tarantino");
-    cout << "Create new movie" << endl;
-    cout << "Current generalId: " << Movie::getCurrentGeneralId() << endl;
+    cout << "Review for Inception: " << critic1.getReview(movie1.getId()) << endl;
+    cout << "Review for The Matrix: " << critic1.getReview(movie2.getId()) << endl;
 
-
-    DatabaseConnection msSql = DatabaseConnection();
-    msSql.connect("db_user", "strongPassw0rd");
-    msSql.changeHost("127.0.0.1");
-    msSql.connect("db_user", "password");
-
-    const DatabaseConnection postgreSql = DatabaseConnection("localhost");
-//    postgreSql.connect(); // error!
-    cout << "PostgreSql host: " << postgreSql.getHost() << endl;
+    return 0;
 
     return 0;
 }

@@ -2,6 +2,8 @@
 #define LAB2_MOVIE_DATABASE_H
 
 #include <iostream>
+#include <vector>
+#include <map>
 
 using namespace std;
 
@@ -18,20 +20,23 @@ public:
 
     friend std::ostream& operator<<(std::ostream& os, const MyInt& obj);
     friend std::istream& operator>>(std::istream& is, MyInt& obj);
+
+    int getValue() const;
 };
 
 class Movie {
 private:
     static MyInt generalId;
-    MyInt id;
+    MyInt id; // has-an id
     string title;
     float rating;
     int *releaseYear;
     string director;
-    static MyInt getId();
+    static MyInt getGenId();
 public:
     void getInfo();
     void updateRating(float newRating);
+    MyInt getId();
     Movie(string title, int releaseYear, string director);
     Movie(string title, float rating, int rYear, string director);
 
@@ -44,7 +49,7 @@ public:
 };
 
 class User {
-private:
+protected:
     string username;
     string email;
     string password;
@@ -56,21 +61,36 @@ public:
     User(const User &other);
 
     ~User();
+
+    User &operator=(const User &other);
 };
 
-class DatabaseConnection {
+class Critic: public User {
 private:
-    string host;
+    string realName;
+    map<int, string> reviews;
 public:
-    bool connect(const string& username, const string& password);
-    void changeHost(string newHost);
-    DatabaseConnection(string host="localhost");
+    Critic(string username, string password, string realName);
+    Critic(string username, string email, string password, string realName);
 
-    DatabaseConnection(const DatabaseConnection &other);
+    Critic(const Critic &other);
 
-    ~DatabaseConnection();
+    Critic &operator=(const Critic &other);
 
-    string getHost() const;
+    string getReview(const MyInt& id);
+    void addReview(const MyInt& id, string review);
+};
+
+class Database {
+private:
+    vector<Movie> movies; // has-a list of movies
+public:
+    Database();
+    Database(const Database &other);
+    ~Database();
+
+    void addMovie(const Movie& movie);
+    size_t countMovies();
 };
 
 
