@@ -1,4 +1,5 @@
-#include "movie_database.h"
+#include "Database.h"
+#include "User.h"
 
 int main() {
     Database db;
@@ -22,7 +23,35 @@ int main() {
     cout << "Review for Inception: " << critic1.getReview(movie1.getId()) << endl;
     cout << "Review for The Matrix: " << critic1.getReview(movie2.getId()) << endl;
 
-    return 0;
+
+    // static method binding
+    cout << "\n// static method binding" << endl;
+    User u{"username", "password"};
+    Critic c{"critic_name", "password", "-"};
+    u.getInfo();
+    c.getInfo();
+    User *pu = new Critic{"critic-user", "psw", "Roger Joseph Ebert"};
+    pu->getInfo();
+
+    // run-time polymorphism with Base class pointer usage
+    cout << "\n// run-time polymorphism | Base class pointer" << endl;
+    User u2{"u2", "p"};
+    Critic c2{"critic2_name", "p", "Name Surname 2"};
+    u2.displayProfile();
+    c2.displayProfile();
+    User *pu2 = new Critic{"critic-user2", "psw", "Critic User 2"};
+    pu2->displayProfile();
+
+    // run-time polymorphism with Base class reference usage
+    cout << "\n// run-time polymorphism | Base class reference" << endl;
+    User u3{"u3", "p"};
+    User &uRef = u3;
+    uRef.displayProfile();
+
+    Critic c3{"critic3_name", "p", "Name Surname 3"};
+    User &cRef = c3;
+    cRef.displayProfile();
+
 
     return 0;
 }
