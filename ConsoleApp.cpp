@@ -45,6 +45,4 @@ void ConsoleApp::run() {
     }
 
     menu->start();
-
-    cout << "Thank you for using the Movie Database!" << endl;
 }

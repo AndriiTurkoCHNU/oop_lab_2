@@ -7,16 +7,28 @@ Database::Database(const Database &other)
     : movies{other.movies}, series{other.series}, critics{other.critics} {}
 
 void Database::addMovie(Movie movie, bool fromFile) {
+    for (const Movie& m : movies) {
+        if (m.getId() == movie.getId()) {
+            cout << "Movie with id " << movie.getId() << " already exists" << endl;
+            return;
+        }
+    }
+
     this->movies.push_back(movie);
 
     if (!fromFile) {
-        ofstream file(DATABASE_FILE, ios_base::app);
-        if (file.is_open()) {
-            file << "Movie," << movie.getId() << "," << movie.getTitle() << "," << movie.getRating() << ","
-                 << movie.getReleaseYear() << "," << movie.getDirector() << "\n";
-            file.close();
-        } else {
-            cerr << "Unable to open file " << DATABASE_FILE << "\n";
+        try {
+            ofstream file(DATABASE_FILE, ios_base::app);
+            if (file.is_open()) {
+                file << "Movie," << movie.getId() << "," << movie.getTitle() << "," << movie.getRating() << ","
+                     << movie.getReleaseYear() << "," << movie.getDirector() << "\n";
+                file.close();
+            } else {
+                throw runtime_error("Unable to open file " + string(DATABASE_FILE));
+            }
+        } catch (const runtime_error& e) {
+            cerr << e.what() << endl;
+            return;
         }
     }
 }
@@ -26,28 +38,45 @@ void Database::addSeries(Series s, bool fromFile) {
     this->series.push_back(s);
 
     if (!fromFile) {
-        ofstream file(DATABASE_FILE, ios_base::app);
-        if (file.is_open()) {
-            file << "Series," << s.getTitle() << "," << s.getRating() << ","
-                 << s.getReleaseYear() << "," << s.getSeasons() << "," << s.getProduction() << "\n";
-            file.close();
-        } else {
-            cerr << "Unable to open file " << DATABASE_FILE << "\n";
+        try {
+            ofstream file(DATABASE_FILE, ios_base::app);
+            if (file.is_open()) {
+                file << "Series," << s.getTitle() << "," << s.getRating() << ","
+                     << s.getReleaseYear() << "," << s.getSeasons() << "," << s.getProduction() << "\n";
+                file.close();
+            } else {
+                throw runtime_error("Unable to open file " + string(DATABASE_FILE));
+            }
+        } catch (const runtime_error& e) {
+            cerr << e.what() << endl;
+            return;
         }
     }
 }
 
 void Database::addCritic(Critic critic, bool fromFile) {
+    for (Critic c : critics) {
+        if (c.getUsername() == critic.getUsername()) {
+            cout << "Critic with username " << critic.getUsername() << " already exists" << endl;
+            return;
+        }
+    }
+
     this->critics.push_back(critic);
 
     if (!fromFile) {
-        ofstream file(DATABASE_FILE, ios_base::app);
-        if (file.is_open()) {
-            file << "Critic," << critic.getUsername() << "," << critic.getEmail() << "," << critic.getRealName()
-                 << "\n";
-            file.close();
-        } else {
-            cerr << "Unable to open file " << DATABASE_FILE << "\n";
+        try {
+            ofstream file(DATABASE_FILE, ios_base::app);
+            if (file.is_open()) {
+                file << "Critic," << critic.getUsername() << "," << critic.getEmail() << "," << critic.getRealName()
+                     << "\n";
+                file.close();
+            } else {
+                throw runtime_error("Unable to open file " + string(DATABASE_FILE));
+            }
+        } catch (const runtime_error& e) {
+            cerr << e.what() << endl;
+            return;
         }
     }
 }
@@ -123,57 +152,67 @@ string Database::getMovieById(const int& id) {
 }
 
 Database Database::readDBFromFile(const string &filename) {
-    ifstream file(filename);
-    Database db;
+    try {
+        ifstream file(filename);
+        Database db;
 
-    if (!file.is_open()) {
-        cout << "Could not open file " << filename << endl;
-        return db;
-    }
-
-    string line;
-    while (getline(file, line)) {
-        istringstream iss(line);
-        vector<string> fields;
-        string field;
-        while (getline(iss, field, ',')) {
-            fields.push_back(field);
+        if (!file.is_open()) {
+            throw runtime_error("Could not open file " + filename);
         }
 
-        if (fields[0] == "Movie") {
-            int id = stoi(fields[1]);
-            string title = fields[2];
-            float rating = stof(fields[3]);
-            int releaseYear = stoi(fields[4]);
-            string director = fields[5];
-            db.addMovie(Movie(id, title, rating, releaseYear, director), true);
-        } else if (fields[0] == "Series") {
-            string title = fields[1];
-            float rating = stof(fields[2]);
-            int releaseYear = stoi(fields[3]);
-            int seasons = stoi(fields[4]);
-            string production = fields[5];
-            db.addSeries(Series(title, rating, releaseYear, seasons, production), true);
-        } else if (fields[0] == "Critic") {
-            string username = fields[1];
-            string email = fields[2];
-            string realName = fields[3];
-            db.addCritic(Critic(username, email, realName), true);
-        } else if (fields[0] == "Review") {
-            string username = fields[1];
-            int movieId = stoi(fields[2]);
-            string review = fields[3];
-            for (Critic& critic : db.critics) {
-                if (critic.getUsername() == username) {
-                    critic.addReview(movieId, review);
+        string line;
+        while (getline(file, line)) {
+            istringstream iss(line);
+            vector<string> fields;
+            string field;
+            while (getline(iss, field, ',')) {
+                fields.push_back(field);
+            }
+
+            if (fields[0] == "Movie") {
+                int id = stoi(fields[1]);
+                string title = fields[2];
+                float rating = stof(fields[3]);
+                int releaseYear = stoi(fields[4]);
+                string director = fields[5];
+                db.addMovie(Movie(id, title, rating, releaseYear, director), true);
+            } else if (fields[0] == "Series") {
+                string title = fields[1];
+                float rating = stof(fields[2]);
+                int releaseYear = stoi(fields[3]);
+                int seasons = stoi(fields[4]);
+                string production = fields[5];
+                db.addSeries(Series(title, rating, releaseYear, seasons, production), true);
+            } else if (fields[0] == "Critic") {
+                string username = fields[1];
+                string email = fields[2];
+                string realName = fields[3];
+                db.addCritic(Critic(username, email, realName), true);
+            } else if (fields[0] == "Review") {
+                string username = fields[1];
+                int movieId = stoi(fields[2]);
+                string review = fields[3];
+                for (Critic& critic : db.critics) {
+                    if (critic.getUsername() == username) {
+                        critic.addReview(movieId, review);
+                    }
                 }
             }
         }
+
+        file.close();
+
+        return db;
+    } catch (const runtime_error& e) {
+        cerr << e.what() << endl;
+        return {};
+    } catch (const exception& e) {
+        cerr << "Error while reading database from file: " << e.what() << endl;
+        return {};
+    } catch (...) {
+        cerr << "Unknown error while reading database from file" << endl;
+        return {};
     }
-
-    file.close();
-
-    return db;
 }
 
 

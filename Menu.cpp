@@ -31,6 +31,7 @@ void UserMenu::start() {
                 cout << "Invalid choice\n";
         }
     } while (choice != 5);
+    cout << "Exiting...\n";
 }
 
 void UserMenu::options() {
@@ -47,45 +48,50 @@ AdminMenu::AdminMenu(Admin admin, const Database& db)
 
 void AdminMenu::start() {
     int choice;
-    do {
-        options();
-        cout << "Enter your choice: ";
-        cin >> choice;
-        switch (choice) {
-            case 1:
-                admin.displayProfile();
-                break;
-            case 2:
-                db.displayMovies();
-                break;
-            case 3:
-                db.displaySeries();
-                break;
-            case 4:
-                db.displayReviews();
-                break;
-            case 5:
-                db.addMovie(Movie::createMovie());
-                break;
-            case 6:
-                db.addSeries(Series::createSeries());
-                break;
-            case 7:
-                db.addCritic(Critic::createCritic());
-                break;
-            case 8:
-                db.addReviewForCritic();
-                break;
-            case 9:
-                db.flushDB();
-                break;
-            case 10:
-                cout << "Exiting...\n";
-                break;
-            default:
-                cout << "Invalid choice\n";
-        }
-    } while (choice != 10);
+    try {
+        do {
+            options();
+            cout << "Enter your choice: ";
+            cin >> choice;
+            switch (choice) {
+                case 1:
+                    admin.displayProfile();
+                    break;
+                case 2:
+                    db.displayMovies();
+                    break;
+                case 3:
+                    db.displaySeries();
+                    break;
+                case 4:
+                    db.displayReviews();
+                    break;
+                case 5:
+                    db.addMovie(Movie::createMovie());
+                    break;
+                case 6:
+                    db.addSeries(Series::createSeries());
+                    break;
+                case 7:
+                    db.addCritic(Critic::createCritic());
+                    break;
+                case 8:
+                    db.addReviewForCritic();
+                    break;
+                case 9:
+                    db.flushDB();
+                    break;
+                case 10:
+                    cout << "Exiting...\n";
+                    break;
+                default:
+                    cout << "Invalid choice\n";
+            }
+        } while (choice != 10);
+        cout << "Exiting...\n";
+    } catch (const exception& e) {
+        cerr << "Error: " << e.what() << endl;
+    }
 }
 
 void AdminMenu::options() {
