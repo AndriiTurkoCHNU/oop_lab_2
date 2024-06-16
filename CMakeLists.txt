@@ -6,9 +6,12 @@ set(CMAKE_CXX_STANDARD 17)
 add_executable(lab2 main.cpp
         Database.cpp
         Database.h
-        helpers.cpp
-        helpers.h
         User.cpp
         User.h
         Watch.cpp
-        Watch.h)
+        Watch.h
+        Menu.cpp
+        Menu.h
+        ConsoleApp.cpp
+        ConsoleApp.h
+        Constants.h)

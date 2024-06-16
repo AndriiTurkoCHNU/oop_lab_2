@@ -1,59 +1,49 @@
 #include "User.h"
+#include <utility>
 
-void User::getInfo() {
-    if (!email.empty())
-        cout << "User " << this->username <<" has email - " << this->email << ".\n" << endl;
-    else
-        cout << "User " << this->username <<" does not have an email.\n" << endl;
-}
-
-User::User(string username, string password)
-        : User{std::move(username), "", std::move(password)} {}
+map<string, string> Admin::loginData;
 
 
-User::User(string username, string email, string password)
-        : username{std::move(username)}, email{std::move(email)}, password{std::move(password)} {}
+User::User(string username)
+        : User{std::move(username), ""} {}
+
+User::User(string username, string email)
+        : username{std::move(username)}, email{std::move(email)} {}
 
 User::User(const User &other)
-        : username{other.username}, email{other.email}, password{other.password} {}
+        : username{other.username}, email{other.email} {}
 
 User &User::operator=(const User &other) {
     if (this != &other) {
         username = other.username;
         email = other.email;
-        password = other.password;
     }
-
     return *this;
 }
 
 User::~User() = default;
 
-bool User::authenticate(const string &pass) {
-    return this->password == pass;
-}
-
 void User::displayProfile() {
     cout << "Displaying profile for user " << username << "\n" << endl;
 }
 
-
-string Critic::getReview(const MyInt& id) {
-    return reviews[id.getValue()];
+string User::getUsername() {
+    return username;
 }
 
-void Critic::addReview(const MyInt& id, string review) {
-    reviews[id.getValue()] = std::move(review);
+string Critic::getReview(const int& id) {
+    return reviews[id];
 }
 
-Critic::Critic(string username, string password, string realName)
-        : User(std::move(username), std::move(password)), realName{std::move(realName)} {}
+void Critic::addReview(const int& id, string review) {
+    reviews[id] = std::move(review);
+}
 
-Critic::Critic(string username, string email, string password, string realName)
-        : User(std::move(username), std::move(email), std::move(password)), realName{std::move(realName)} {}
+Critic::Critic(string username, string email, string realName)
+        : User(std::move(username), std::move(email)), realName{std::move(realName)} {}
 
 Critic::Critic(const Critic &other)
-        : User(other), realName{other.realName} {}
+        : User(other), realName{other.realName}, reviews{other.reviews} {}
 
 Critic &Critic::operator=(const Critic &other) {
     if (this != &other) {
@@ -61,29 +51,10 @@ Critic &Critic::operator=(const Critic &other) {
         realName = other.realName;
     }
     return *this;
-
 }
 
 size_t Critic::countReviews() {
     return reviews.size();
-}
-
-void Critic::getInfo() {
-    if (!email.empty())
-        cout << "Critic " << this->username <<" has email - " << this->email << "." << endl;
-    else
-        cout << "Critic " << this->username <<" does not have an email." << endl;
-    cout << "Critic has " << this->countReviews() <<  " reviews.\n" << endl;
-}
-
-bool Critic::authenticate(const string &pass) {
-    if (pass == this->password) {
-        cout << "Critic authenticated successfully." << endl;
-        return true;
-    } else {
-        cout << "Authentication failed for Critic." << endl;
-        return false;
-    }
 }
 
 void Critic::displayProfile()  {
@@ -91,4 +62,64 @@ void Critic::displayProfile()  {
     if (!email.empty())
         cout << "Email: " << email << endl;
     cout << endl;
+}
+
+map<int, string> Critic::getReviews() {
+    return reviews;
+}
+
+string Critic::getRealName() {
+    return realName;
+}
+
+
+string Critic::getEmail() {
+    return email;
+}
+
+Critic Critic::createCritic() {
+    string username, email, realName;
+
+    cout << "Enter username: ";
+    cin >> username;
+    cout << "Enter email: ";
+    cin >> email;
+    cout << "Enter real name: ";
+    cin >> realName;
+
+    return {username, email, realName};
+}
+
+Admin::Admin(string username, string password)
+    : User(std::move(username)), password{std::move(password)} {}
+
+void Admin::displayProfile() {
+    cout << "Displaying profile for admin " << username << "\n" << endl;
+}
+
+void Admin::readLoginDataFromFile(const string &filename) {
+    ifstream file(filename);
+
+    if (!file.is_open()) {
+        cerr << "Unable to open file " << filename << endl;
+    }
+
+    string line;
+    while (getline(file, line)) {
+        stringstream ss(line);
+        string username, password;
+
+        if (!getline(ss, username, ':') || !getline(ss, password, ':')) {
+            cerr << "Invalid line format in file " << filename << endl;
+            continue;
+        }
+
+        Admin::loginData[username] = password;
+    }
+
+    file.close();
+}
+
+bool Admin::login() {
+    return loginData.find(username) != loginData.end() && loginData[username] == password;
 }

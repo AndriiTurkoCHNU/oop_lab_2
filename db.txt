@@ -1,0 +1,16 @@
+Movie,1,Titanic,7.8,1997,James Cameron
+Series,Friends,8.9,1994,10,Bright Kauffman Crane
+Critic,john_doe,johndoe@example.com,John Doe
+Movie,2,Avatar,7.8,2009,James Cameron
+Series,The Big Bang Theory,8.1,2007,12,Chuck Lorre
+Critic,jane_doe,janedoe@example.com,Jane Doe
+Review,john_doe,1,Great movie!
+Review,jane_doe,2,Loved the movie!
+Review,john_doe,2,Not my cup of tea.
+Movie,3,Test,9.3,2024,Andrii Turko
+Movie 4,Test,2.2,212,I Am
+Movie,5,tet,5,134,tet
+Series,too,6,2345,5,ryye
+Series,er,3,3,3,er
+Movie,6,mov,6,6,mov
+Critic,cre,cre,CRe
