@@ -14,4 +14,5 @@ add_executable(lab2 main.cpp
         Menu.h
         ConsoleApp.cpp
         ConsoleApp.h
-        Constants.h)
+        Constants.h
+        Constants.cpp)

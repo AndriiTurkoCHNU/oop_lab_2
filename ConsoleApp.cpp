@@ -19,7 +19,7 @@ void ConsoleApp::run() {
         string password;
         cin >> password;
         Admin admin{username, password};
-        Admin::readLoginDataFromFile("../admin.txt");
+        Admin::readLoginDataFromFile(ADMIN_FILE);
 
         if (admin.login()) {
             cout << "Logged in successfully!" << endl;

@@ -1,0 +1,10 @@
+User arrr log history: 2 2 2 2 22 3 3 3 33 3 4 5
+Logged out at 2024-06-16 11:23:41
+User Andrii log history: 1 2 3 4 2 5
+Logged out at 2024-06-16 08:24:38
+User Test log history: 2 2 2 4 5
+Logged out at 2024-06-16 11:24:51
+User FinTest log history: 1 1 1 5 
+Logged out at 2024-06-16 11:25:57
+User r log history: 2 3 4 5 
+Logged out at 2024-06-16 11:27:24

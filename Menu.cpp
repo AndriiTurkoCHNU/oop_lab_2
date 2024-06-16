@@ -11,6 +11,7 @@ void UserMenu::start() {
         options();
         cout << "Enter your choice: ";
         cin >> choice;
+        logHistory.push_back(choice);
         switch (choice) {
             case 1:
                 user.displayProfile();
@@ -25,12 +26,12 @@ void UserMenu::start() {
                 db.displayReviews();
                 break;
             case 5:
-                cout << "Exiting...\n";
                 break;
             default:
                 cout << "Invalid choice\n";
         }
     } while (choice != 5);
+    saveLog();
     cout << "Exiting...\n";
 }
 
@@ -41,6 +42,25 @@ void UserMenu::options() {
     cout << "3. See series\n";
     cout << "4. See reviews\n";
     cout << "5. Exit\n";
+}
+
+void UserMenu::saveLog() {
+    try {
+        ofstream file(LOG_FILE, ios::app);
+        if (!file.is_open()) {
+            throw runtime_error("Could not open file log.txt");
+        }
+        file << "User " << user.getUsername() << " log history: ";
+        for (int choice : logHistory) {
+            file << choice << " ";
+        }
+        file << "\nLogged out at " << currentLocalDateTime();
+
+        file << endl;
+        file.close();
+    } catch (const exception& e) {
+        cerr << "Error: " << e.what() << endl;
+    }
 }
 
 AdminMenu::AdminMenu(Admin admin, const Database& db)
@@ -82,7 +102,6 @@ void AdminMenu::start() {
                     db.flushDB();
                     break;
                 case 10:
-                    cout << "Exiting...\n";
                     break;
                 default:
                     cout << "Invalid choice\n";

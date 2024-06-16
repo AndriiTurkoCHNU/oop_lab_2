@@ -15,6 +15,9 @@ class UserMenu: public Menu {
 private:
     User user;
     Database db;
+    vector<int> logHistory;
+
+    void saveLog();
 public:
     UserMenu(const User& user, const Database& db);
 
